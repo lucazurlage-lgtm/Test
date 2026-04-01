@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ToDo App mit Flask</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Meine ToDo-Liste</h1>
+
+      <form action="{{ url_for('add_task') }}" method="post" class="add-form">
+        <label for="text">Neue Aufgabe</label>
+        <div class="row">
+          <input id="text" name="text" type="text" placeholder="z. B. Milch kaufen" required />
+          <button type="submit">Hinzufügen</button>
+        </div>
+      </form>
+
+      <section>
+        <h2>Aufgaben</h2>
+
+        {% if tasks %}
+          <ul class="task-list">
+            {% for task in tasks %}
+              <li class="task-item {% if task.done %}done{% endif %}">
+                <span>{{ task.text }}</span>
+
+                <div class="actions">
+                  {% if not task.done %}
+                    <form action="{{ url_for('mark_done', task_id=task.id) }}" method="post">
+                      <button type="submit" class="done-btn">Erledigt</button>
+                    </form>
+                  {% endif %}
+
+                  <form action="{{ url_for('delete_task', task_id=task.id) }}" method="post">
+                    <button type="submit" class="delete-btn">Löschen</button>
+                  </form>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>Noch keine Aufgaben vorhanden.</p>
+        {% endif %}
+      </section>
+    </main>
+  </body>
+</html>
